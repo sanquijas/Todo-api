@@ -1,5 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var _ = require('underscore');
+
 var app = express();
 var PORT = process.env.PORT || 3000;
 var todos = [];
@@ -19,37 +21,28 @@ app.get('/todos', function (req, res) {
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
   var todoId = parseInt(req.params.id, 10);
-  var todo;
+  var matchedTodo = _.findWhere(todos, {id: todoId});
 
-  for (i=0; i < todos.length; i++) {
-    if (todos[i].id === todoId) {
-      todo = todos[i]; 
-    }
-  }
-  if (todo) {
-    res.json(todo);
+  if (matchedTodo) {
+    res.json(matchedTodo);
   } else {
     res.status(404).send();
   }
-  // Iterate of todos array. Find the match
-  // res.status(404).send();
-  // res.send('Asking for todo with id of ' + req.params.id)
-  //res.send(typeof todoId)
 });
 
 // POST /todos/
 app.post('/todos', function (req, res) {
-  var body = req.body;
+  var body = _.pick(req.body, 'description', 'completed');
 
+  if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
+    return res.status(400).send() //400 means cannot be completed because of bad data
+  }
+  //set body.description to trimmed value
+  body.description = body.description.trim();
   // add id field (I could get length of todos array and add 1 for id)
   body.id = todoNextId++;
-
-  // push body into array
   todos.push(body);
-
-  console.log('description ' + body.description);
-
-  res.json(body);  
+  res.json(body);
 });
 
 app.listen(PORT, function() {
