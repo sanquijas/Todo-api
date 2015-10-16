@@ -1,0 +1,29 @@
+1. mkdir todo-api
+
+2. cd todo-api/
+
+3. git init
+
+4. npm init
+
+5. vim .gitignore
+     --.gitignore--
+     node_modules/
+     -- end --
+
+6. npm install express@4.13.3 --save
+    We add node_modules/ to .gitignore because we can run 'npm install' and it will look into package.json and intall all the dependencies. It is exactly what heroku does when we push our project. It looks into package.json and installs all of the dependencies.
+
+7. create server.js
+
+8. Run local server to test server.js
+   node server.js
+
+9. heroku create
+   - makes new heroku app and adds heroku get remote
+
+10. heroku rename sanchez-todo-api
+
+11. git add .
+
+12. git commit -am "Init repo"
