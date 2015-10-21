@@ -9,7 +9,7 @@ var Todo = sequelize.define('todo', {
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
-      len: [1, 250],
+      len: [1, 250]
     }
   },
   completed: {
@@ -24,7 +24,7 @@ sequelize.sync({
 }).then(function () { 
   console.log('Everything is synced');
 
-  Todo.findById(2).then(function (todo) {
+  Todo.findById(3).then(function (todo) {
     if (todo) {
       console.log(todo.toJSON());
     } else {
