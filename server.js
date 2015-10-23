@@ -62,34 +62,27 @@ app.post('/todos', function (req, res) {
   }, function(e) {
     res.status(400).json(e);
   });
-
-  // call create on db.todo
-  //   respond wilth 200 and todo
-  // res.status(400).json(e)  
-
-  //if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-  //  return res.status(400).send() //400 means cannot be completed because of bad data
-  //}
-  
-  //body.description = body.description.trim();
-  //body.id = todoNextId++;
-  
-  //todos.push(body);
-  
-  //res.json(body);
 });
 
 // DELETE /todos/:id
 app.delete('/todos/:id', function(req, res) {
   var todoId = parseInt(req.params.id, 10);
-  var matchedTodo = _.findWhere(todos, {id: todoId});
 
-  if (matchedTodo) {
-    todos = _.without(todos, matchedTodo);
-    res.json(matchedTodo);
-  } else {
-    res.status(404).json({"error": "no todo found with that id"});
-  }
+  db.todo.destroy({ 
+    where: {
+      id: todoId
+    }
+  }).then(function (rowsDeleted) {
+      if (rowsDeleted === 0) {
+        res.status(404).json({
+          error: 'No todo with id'
+        });
+      } else {
+        res.status(204).send(); //204 everything went well but there is nothing to return
+      }
+  }, function () {
+      res.status(500).send();
+  });
 });
 // PUT /todos/:id
 app.put('/todos/:id', function(req, res) {
